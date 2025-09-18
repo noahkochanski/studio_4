@@ -75,10 +75,10 @@ def bootstrap_ci(bootstrap_stats, alpha=0.05):
     if type(bootstrap_stats) != "numpy.ndarray":
         raise TypeError("bootstrap_stats must be a NumPy array")
 
-    if !isinstance(alpha, float):
+    if not isinstance(alpha, float):
         raise TypeError("alpha must be a float")
 
-    if !(0 < alpha < 1):
+    if not (0 < alpha < 1):
         raise ValueError("alpha must be in (0,1)")
 
     lower_bound = np.quantile(bootstrap_stats, alpha/2)
@@ -114,7 +114,7 @@ def R_squared(X, y):
     if X.shape[0] != len(y):
         raise ValueError("X and y must have the same length")
 
-    if !all(item == 1 for item in X[:, 0]):
+    if not all(item == 1 for item in X[:, 0]):
         warnings.warn("Missing intercept column in X", UserWarning)
 
     XX = np.linalg.inv(np.transpose(X)@X)
@@ -123,6 +123,6 @@ def R_squared(X, y):
     ybar = np.mean(y)
     TSS = (y - ybar)**2
     RSS = (y-residuals)**2
-    R_squared = 1-RSS/TSS
+    R_2 = 1-RSS/TSS
 
-    R_squared
+    R_2
