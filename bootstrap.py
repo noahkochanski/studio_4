@@ -7,7 +7,7 @@ Strong linear model in regression
     (if you have an intercept beta_0), 
         R^2 ~ Beta(p/2, (n-p-1)/2)
 """
-
+import numpy as np
 
 def bootstrap_sample(X, y, compute_stat, n_bootstrap=1000):
     """
@@ -30,7 +30,27 @@ def bootstrap_sample(X, y, compute_stat, n_bootstrap=1000):
 
     ....
     """
-    pass
+    if not isinstance(X, np.ndarray) or not isinstance(y, np.ndarray):
+        raise TypeError("X and y must be arrays")
+    if not callable(compute_stat):
+        raise TypeError("compute_stat is not callable")
+    if n != len(y):
+        raise ValueError("X and y have different lengths.")
+    if not np.allclose(X[:, 0], 1):
+        warnings.warn("missing intercept column", UserWarning)
+
+    n = X.shape[0]
+
+
+    stats = []
+    for _ in range(n_bootstrap):
+        idx = np.random.choice(n, n, replace=True)
+        X_resample = X[idx]
+        y_resample = y[idx]
+        stat = compute_stat(X_resample, y_resample)
+        stats.append(stat)
+
+    return stats
 
 def bootstrap_ci(bootstrap_stats, alpha=0.05):
     """
