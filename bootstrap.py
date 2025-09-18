@@ -1,3 +1,5 @@
+import warnings
+import numpy as np
 
 """
 Strong linear model in regression
@@ -70,7 +72,18 @@ def bootstrap_ci(bootstrap_stats, alpha=0.05):
     
     ....
     """
-    pass
+    if type(bootstrap_stats) != "numpy.ndarray":
+        raise TypeError("bootstrap_stats must be a NumPy array")
+
+    if !isinstance(alpha, float):
+        raise TypeError("alpha must be a float")
+
+    if !(0 < alpha < 1):
+        raise ValueError("alpha must be in (0,1)")
+
+    lower_bound = np.quantile(bootstrap_stats, alpha/2)
+    upper_bound = np.quantile(bootstrap_stats, 1-alpha/2)
+    (lower_bound, upper_bound)
 
 def R_squared(X, y):
     """
@@ -92,4 +105,24 @@ def R_squared(X, y):
     ValueError
         If X.shape[0] != len(y)
     """
-    pass
+    if type(X) != "numpy.ndarray":
+        raise TypeError("X must be a NumPy array")
+
+    if type(y) != "numpy.ndarray":
+        raise TypeError("y must be a NumPy array")
+
+    if X.shape[0] != len(y):
+        raise ValueError("X and y must have the same length")
+
+    if !all(item == 1 for item in X[:, 0]):
+        warnings.warn("Missing intercept column in X", UserWarning)
+
+    XX = np.linalg.inv(np.transpose(X)@X)
+    H = X@XX@np.transpose(X)
+    residuals = y - H@y
+    ybar = np.mean(y)
+    TSS = (y - ybar)**2
+    RSS = (y-residuals)**2
+    R_squared = 1-RSS/TSS
+
+    R_squared
