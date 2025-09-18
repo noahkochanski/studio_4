@@ -72,14 +72,17 @@ def bootstrap_ci(bootstrap_stats, alpha=0.05):
     
     ....
     """
-    if type(bootstrap_stats) != "numpy.ndarray":
-        raise TypeError("bootstrap_stats must be a NumPy array")
+    if not isinstance(bootstrap_stats, np.ndarray):
+        raise TypeError("stats should be array-like")
+
+    if bootstrap_stats.size == 0:
+        raise ValueError("stats should not be empty")
 
     if not isinstance(alpha, float):
         raise TypeError("alpha must be a float")
 
     if not (0 < alpha < 1):
-        raise ValueError("alpha must be in (0,1)")
+        raise ValueError("alpha needs to be between 0 and 1")
 
     lower_bound = np.quantile(bootstrap_stats, alpha/2)
     upper_bound = np.quantile(bootstrap_stats, 1-alpha/2)

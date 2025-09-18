@@ -21,7 +21,7 @@ def test_boostrap_CI():
 
     # Testing statistics are not empty
     with pytest.raises(ValueError, match = "stats should not be empty"):
-        bootstrap_ci([], alpha=0.05)
+        bootstrap_ci(np.array([]), alpha=0.05)
 
 def bootstrap_sample_output():
     """ Test output of bootstrap sample has length n_bootstrap """
@@ -69,19 +69,19 @@ def bootstrap_sample_data_types():
     # y is not an array
     y = 2
     X = np.random.normal(0, 1, (1, 2))
-    with pytest.raises(TypeError, match="must be arrays")
+    with pytest.raises(TypeError, match="must be arrays"):
         bootstrap_sample(X, y, R_squared)
 
     # X is not an array
     y = np.random.normal(0, 1, 2)
     X = (3, 4)
-    with pytest.raises(TypeError, match="must be arrays")
+    with pytest.raises(TypeError, match="must be arrays"):
         bootstrap_sample(X, y, R_squared)
 
     # both y and X not arrays
     y = "Hello"
     X = "World"
-    with pytest.raises(TypeError, match="must be arrays")
+    with pytest.raises(TypeError, match="must be arrays"):
         bootstrap_sample(X, y, R_squared)
 
 def test_R_squared():
