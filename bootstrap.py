@@ -105,14 +105,14 @@ def R_squared(X, y):
     ValueError
         If X.shape[0] != len(y)
     """
-    if type(X) != "numpy.ndarray":
-        raise TypeError("X must be a NumPy array")
+    if not isinstance(X, np.ndarray):
+        raise TypeError("X is not an array")
 
-    if type(y) != "numpy.ndarray":
-        raise TypeError("y must be a NumPy array")
+    if not isinstance(y, np.ndarray):
+        raise TypeError("y is not an array")
 
     if X.shape[0] != len(y):
-        raise ValueError("X and y must have the same length")
+        raise ValueError("X and y do not match in size")
 
     if not all(item == 1 for item in X[:, 0]):
         warnings.warn("Missing intercept column in X", UserWarning)
