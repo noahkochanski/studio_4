@@ -40,27 +40,6 @@ def bootstrap_sample_arg_lengths():
     with pytest.raises(ValueError, match="different lengths"):
         bootstrap_sample(X, y, R_squared)
 
-def bootstrap_sample_data_types():
-    """ Test that X and y are arrays """
-
-    # y is not an array
-    y = 2
-    X = np.random.normal(0, 1, (1, 2))
-    with pytest.raises(TypeError, match="must be arrays"):
-        bootstrap_sample(X, y, R_squared)
-
-    # X is not an array
-    y = np.random.normal(0, 1, 2)
-    X = (3, 4)
-    with pytest.raises(TypeError, match="must be arrays"):
-        bootstrap_sample(X, y, R_squared)
-
-    # both y and X not arrays
-    y = "Hello"
-    X = "World"
-    with pytest.raises(TypeError, match="must be arrays"):
-        bootstrap_samples(X, y, R_squared)
-
 def bootstrap_sample_stat_type():
     """ Test stat function is callable """
     y = np.random.normal(0, 1, 100)
@@ -83,22 +62,6 @@ def bootstrap_sample_test_intercept():
     with pytest.warns(UserWarning, match = "missing intercept column"):
         bootstrap_samples(X, y, R_squared)
 
-def bootstrap_sample_output():
-    """ Test output of bootstrap sample has length n_bootstrap """
-    y = np.random.normal(0, 1, 100)
-    X = np.random.normal(0, 1, (100,3))
-    X = np.concatenate((ones(100), X), axis=1)
-
-    results = bootstrap_sample(X, y, R_squared)
-    assert len(results) == 1000
-    
-def bootstrap_sample_arg_lengths():
-    """ Test y and X have same length """
-    y = np.random.normal(0, 1, 50)
-    X = np.random.normal(0, 1, (100, 2))
-    X = np.concatenate((ones(100), X), axis=1)
-    with pytest.raises(ValueError, match="different lengths")
-        bootstrap_sample(X, y, R_squared)
 
 def bootstrap_sample_data_types():
     """ Test that X and y are arrays """
@@ -120,21 +83,6 @@ def bootstrap_sample_data_types():
     X = "World"
     with pytest.raises(TypeError, match="must be arrays")
         bootstrap_sample(X, y, R_squared)
-
-def bootstrap_sample_stat_type():
-    """ Test stat function is callable """
-    y = np.random.normal(0, 1, 100)
-    X = np.random.normal(0, 1, (100, 2))
-    X = concatenate((ones(100), X), axis=1)
-    with pytest.raises(TypeError, match="is not callable")
-        bootstrap_sample(X, y, 3, n_bootstrap = 1000)
-
-def bootstrap_sample_happy_path():
-    """ Test that bootstrap sample correctly implements paired bootstrap"""
-    y = np.random.normal(0, 1, 100)
-    X = concatenate(ones(100), y)
-    results = bootstrap_sample(y, X, R_squared)
-    assert all(item == 1 for item in results)
 
 def test_R_squared():
     X = np.ones([1,2])
