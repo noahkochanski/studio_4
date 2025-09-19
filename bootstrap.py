@@ -36,23 +36,21 @@ def bootstrap_sample(X, y, compute_stat, n_bootstrap=1000):
         raise TypeError("X and y must be arrays")
     if not callable(compute_stat):
         raise TypeError("compute_stat is not callable")
+    n = X.shape[0]
     if n != len(y):
         raise ValueError("X and y have different lengths.")
     if not np.allclose(X[:, 0], 1):
         warnings.warn("missing intercept column", UserWarning)
 
-    n = X.shape[0]
-
-
     stats = []
     for _ in range(n_bootstrap):
         idx = np.random.choice(n, n, replace=True)
-        X_resample = X[idx]
+        X_resample = X[idx,:]
         y_resample = y[idx]
         stat = compute_stat(X_resample, y_resample)
         stats.append(stat)
 
-    return stats
+    return np.array(stats)
 
 def bootstrap_ci(bootstrap_stats, alpha=0.05):
     """
@@ -86,7 +84,7 @@ def bootstrap_ci(bootstrap_stats, alpha=0.05):
 
     lower_bound = np.quantile(bootstrap_stats, alpha/2)
     upper_bound = np.quantile(bootstrap_stats, 1-alpha/2)
-    (lower_bound, upper_bound)
+    return (lower_bound, upper_bound)
 
 def R_squared(X, y):
     """
@@ -117,15 +115,12 @@ def R_squared(X, y):
     if X.shape[0] != len(y):
         raise ValueError("X and y do not match in size")
 
-    if not all(item == 1 for item in X[:, 0]):
-        warnings.warn("Missing intercept column in X", UserWarning)
-
     XX = np.linalg.inv(np.transpose(X)@X)
     H = X@XX@np.transpose(X)
     residuals = y - H@y
     ybar = np.mean(y)
-    TSS = (y - ybar)**2
-    RSS = (y-residuals)**2
+    TSS = np.sum((y - ybar)**2)
+    RSS = np.sum((residuals)**2)
     R_2 = 1-RSS/TSS
 
-    R_2
+    return R_2
